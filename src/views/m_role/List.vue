@@ -19,22 +19,27 @@
 		</el-row>
 
 		<!--列表-->
-		<el-table :data="routers" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;">
-			<el-table-column prop="name" label="接口名称" sortable>
+		<el-table :data="roles" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;">
+			<el-table-column prop="name" label="角色名称" width="200px" sortable>
 			</el-table-column>
-			<el-table-column prop="requestType" width="200" label="请求方式" >
+			<el-table-column prop="description" label="描述" >
 			</el-table-column>
-			<el-table-column prop="routerUrl" label="请求地址" >
-			</el-table-column>
-			<el-table-column prop="serviceName" label="组件名" >
-			</el-table-column>
+			<el-table-column label="创建时间">
+				<template slot-scope="scope">
+					<el-date-picker 
+						disabled="true"
+						v-model="scope.row.createTime"
+						type="datetime">
+					</el-date-picker>
+				</template>
+				</el-table-column>
 		</el-table>
 	</section>
 </template>
 
 <script>
 	import util from '../../common/js/util'
-	import { req_getRouterList} from '../../api/api';
+	import {req_getRoleList} from '../../api/api';
 
 	export default {
 		data() {
@@ -42,7 +47,7 @@
 				filters: {
 					name: ''
 				},
-				routers: [],
+				roles: [],
 				total: 0,
 				page: 1,
 				listLoading: false,
@@ -75,11 +80,11 @@
 					name: this.filters.name
 				};
 				this.listLoading = true;
-				req_getRouterList().then((res) => {
+				req_getRoleList().then((res) => {
 					console.log('req_getRouterList',res);
 					//TODO 分页查询
 					this.total = 100;
-					this.routers = res.data;
+					this.roles = res.data;
 					this.listLoading = false;
 				});
 			},

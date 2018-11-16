@@ -19,7 +19,7 @@
 		</el-row>
 
 		<!--列表-->
-		<el-table :data="routers" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;">
+		<el-table :data="routers" highlight-current-row v-loading="listLoading"  style="width: 100%;">
 			<el-table-column prop="name" label="接口名称" sortable>
 			</el-table-column>
 			<el-table-column prop="requestType" width="200" label="请求方式" >
@@ -46,9 +46,6 @@
 				total: 0,
 				page: 1,
 				listLoading: false,
-				sels: [],//列表选中列
-
-				editFormVisible: false,//编辑界面是否显示
 				editLoading: false,
 				editFormRules: {
 					name: [
@@ -82,11 +79,7 @@
 					this.routers = res.data;
 					this.listLoading = false;
 				});
-			},
-			selsChange: function (sels) {
-				this.sels = sels;
-			},
-
+			}
 		},
 		mounted() {
 			this.getUsers();
