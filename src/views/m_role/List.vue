@@ -24,7 +24,7 @@
 			</el-table-column>
 			<el-table-column prop="description" label="描述" >
 			</el-table-column>
-			<el-table-column label="创建时间">
+			<el-table-column prop="createTime"  label="创建时间" sortable>
 				<template slot-scope="scope">
 					<el-date-picker 
 						disabled="true"

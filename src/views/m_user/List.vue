@@ -19,14 +19,38 @@
 		</el-row>
 
 		<!--列表-->
-		<el-table :data="routers" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;">
-			<el-table-column prop="name" label="接口名称" sortable>
+		<el-table :data="users" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;">
+			<el-table-column prop="userPortrait" width="100px" label="头像" >
 			</el-table-column>
-			<el-table-column prop="requestType" width="200" label="请求方式" >
+			<el-table-column prop="nickName" label="昵称" sortable>
 			</el-table-column>
-			<el-table-column prop="routerUrl" label="请求地址" >
+			<el-table-column prop="gender" width="100px" label="性别" :formatter="formatSex" sortable>
 			</el-table-column>
-			<el-table-column prop="serviceName" label="组件名" >
+			<el-table-column prop="address" label="住址" sortable>
+			</el-table-column>
+			<el-table-column prop="signature" label="签名">
+			</el-table-column>
+			<el-table-column prop="email" label="邮箱" sortable>
+			</el-table-column>
+			<el-table-column prop="phone" label="电话" sortable>
+			</el-table-column>
+			<el-table-column prop="birthday" label="生日" sortable>
+				<template slot-scope="scope">
+					<el-date-picker 
+						disabled="true"
+						v-model="scope.row.birthday"
+						type="datetime">
+					</el-date-picker>
+				</template>
+			</el-table-column>
+			<el-table-column prop="createTime" label="注册时间" sortable>
+				<template slot-scope="scope">
+					<el-date-picker 
+						disabled="true"
+						v-model="scope.row.createTime"
+						type="datetime">
+					</el-date-picker>
+				</template>
 			</el-table-column>
 		</el-table>
 	</section>
@@ -34,7 +58,7 @@
 
 <script>
 	import util from '../../common/js/util'
-	import { req_getRouterList} from '../../api/api';
+	import { req_getUserInfoList} from '../../api/api';
 
 	export default {
 		data() {
@@ -42,7 +66,7 @@
 				filters: {
 					name: ''
 				},
-				routers: [],
+				users: [],
 				total: 0,
 				page: 1,
 				listLoading: false,
@@ -64,6 +88,10 @@
 			}
 		},
 		methods: {
+			//性别显示转换
+			formatSex: function (row, column) {
+				return row.gender == 1 ? '男' : row.gender == 0 ? '女' : '未知';
+			},
 			handleCurrentChange(val) {
 				this.page = val;
 				this.getUsers();
@@ -75,11 +103,11 @@
 					name: this.filters.name
 				};
 				this.listLoading = true;
-				req_getRouterList().then((res) => {
-					console.log('req_getRouterList',res);
+				req_getUserInfoList().then((res) => {
+					console.log('req_getUserInfoList',res);
 					//TODO 分页查询
 					this.total = 100;
-					this.routers = res.data;
+					this.users = res.data;
 					this.listLoading = false;
 				});
 			},

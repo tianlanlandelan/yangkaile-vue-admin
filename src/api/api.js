@@ -19,6 +19,10 @@ export const req_getRoleList = () => {
     return axios.get(`${base}`,{params:{methodName:'getAllRoles10003'}}
      ).then(res => res.data); 
 };
+export const req_getUserInfoList = () => { 
+    return axios.get(`${base}`,{params:{methodName:'getAllUserInfo10018'}}
+     ).then(res => res.data); 
+};
 
 export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };
 
