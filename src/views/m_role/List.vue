@@ -32,7 +32,7 @@
 						type="datetime">
 					</el-date-picker>
 				</template>
-				</el-table-column>
+			</el-table-column>
 		</el-table>
 	</section>
 </template>

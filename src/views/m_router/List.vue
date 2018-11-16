@@ -20,13 +20,26 @@
 
 		<!--列表-->
 		<el-table :data="routers" highlight-current-row v-loading="listLoading"  style="width: 100%;">
-			<el-table-column prop="name" label="接口名称" sortable>
+			<el-table-column prop="name" label="接口名称"  sortable>
 			</el-table-column>
-			<el-table-column prop="requestType" width="200" label="请求方式" >
+			<el-table-column prop="requestType" width="120px" label="请求方式" sortable>
 			</el-table-column>
-			<el-table-column prop="routerUrl" label="请求地址" >
+			<el-table-column prop="routerUrl"   label="请求地址" >
 			</el-table-column>
-			<el-table-column prop="serviceName" label="组件名" >
+			<el-table-column prop="serviceName" label="组件名"  sortable>
+			</el-table-column>
+			<el-table-column prop="parameters"  label="参数" >
+			</el-table-column>
+			<el-table-column prop="description" label="描述" >
+			</el-table-column>
+			<el-table-column prop="createTime"  label="创建时间" sortable>
+				<template slot-scope="scope">
+					<el-date-picker 
+						disabled
+						v-model="scope.row.createTime"
+						type="datetime">
+					</el-date-picker>
+				</template>
 			</el-table-column>
 		</el-table>
 	</section>
