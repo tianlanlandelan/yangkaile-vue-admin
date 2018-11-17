@@ -44,6 +44,21 @@ export const addRole = (name,description) => {
             parameters:"name:" + Base64.encode(name) + ";description:" + Base64.encode(description) 
     }); 
 };
+/**
+ * 修改角色
+ * @param {角色Id} id
+ * @param {角色名} name 
+ * @param {角色描述} description 
+ */
+export const updateRole = (id,name,description) => { 
+    return axios.put(
+    `${base}`, { 
+            methodName:'updateRole10015',
+            parameters: "id:" + Base64.encode(id) 
+                        +";name:" + Base64.encode(name) 
+                        + ";description:" + Base64.encode(description) 
+    }); 
+};
 
 export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };
 

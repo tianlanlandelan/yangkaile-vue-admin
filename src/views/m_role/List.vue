@@ -63,7 +63,7 @@
 
 <script>
 	import util from '../../common/js/util'
-	import {req_getRoleList,addRole} from '../../api/api';
+	import {req_getRoleList,addRole,updateRole} from '../../api/api';
 	export default {
 		data() {
 			return {
@@ -116,7 +116,7 @@
 				req_getRoleList().then((res) => {
 					console.log('req_getRouterList',res);
 					//TODO 分页查询
-					this.total = 100;
+					this.total = 10;
 					this.roles = res.data;
 					this.listLoading = false;
 				});
@@ -139,6 +139,7 @@
 					description: ''
 				};
 			},
+			//新增/编辑界面提交操作
 			editSubmit: function () {
 				this.$refs.editDialog.validate((valid) => {
 					let roleId = this.editDialog.data.id;
@@ -153,7 +154,7 @@
 								addRole(roleName,roleDescription).then((res) => {
 									this.editDialog.isLoading = false;
 									this.$message({
-										message: '提交成功',
+										message: '添加角色成功',
 										type: 'success'
 									});
 									this.$refs['editDialog'].resetFields();
@@ -162,8 +163,18 @@
 								});
 							//编辑操作
 							}else{
-
+								updateRole(roleId,roleName,roleDescription).then((res) => {
+									this.editDialog.isLoading = false;
+									this.$message({
+										message: '修改角色成功',
+										type: 'success'
+									});
+									this.$refs['editDialog'].resetFields();
+									this.editDialog.isShow = false;
+									this.getRoles();
+								});
 							}
+							
 							
 						});
 					}
