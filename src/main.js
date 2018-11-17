@@ -12,6 +12,7 @@ import Vuex from 'vuex'
 import routes from './routes'
 import 'font-awesome/css/font-awesome.min.css'
 
+
 Vue.use(ElementUI)
 Vue.use(VueRouter)
 Vue.use(Vuex)

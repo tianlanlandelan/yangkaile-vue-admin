@@ -8,7 +8,7 @@
 					<el-input v-model="filters.name" placeholder="姓名"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" v-on:click="getUsers">查询</el-button>
+					<el-button type="primary" v-on:click="getRoles">查询</el-button>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="showAddDialog">新增</el-button>
@@ -45,7 +45,7 @@
 		</el-table>
 		<!--添加/编辑界面-->
 		<el-dialog title="添加/编辑" v-model="editDialog.isShow" :close-on-click-modal="false">
-			<el-form :model="editDialog.data" label-width="80px" :rules="editDialog.rules" ref="addForm">
+			<el-form :model="editDialog.data" label-width="80px" :rules="editDialog.rules" ref="editDialog">
 				<el-form-item label="角色名" prop="name">
 					<el-input v-model="editDialog.data.name" auto-complete="off"></el-input>
 				</el-form-item>
@@ -63,8 +63,7 @@
 
 <script>
 	import util from '../../common/js/util'
-	import {req_getRoleList} from '../../api/api';
-
+	import {req_getRoleList,addRole} from '../../api/api';
 	export default {
 		data() {
 			return {
@@ -78,6 +77,8 @@
 				sels: [],//列表选中列
 				//编辑界面数据
 				editDialog:{
+					//是否是添加界面
+					isAdd: false,
 					//是否显示
 					isShow: false,
 					//提交按钮是否显示加载动画
@@ -103,10 +104,10 @@
 		methods: {
 			handleCurrentChange(val) {
 				this.page = val;
-				this.getUsers();
+				this.getRoles();
 			},
 			//获取用户列表
-			getUsers() {
+			getRoles() {
 				let para = {
 					page: this.page,
 					name: this.filters.name
@@ -125,11 +126,13 @@
 			},
 			//显示编辑界面
 			showEditDialog: function (index, row) {
+				this.editDialog.isAdd = false;
 				this.editDialog.isShow = true;
 				this.editDialog.data = Object.assign({}, row);
 			},
 			//显示新增界面
 			showAddDialog: function () {
+				this.editDialog.isAdd = true;
 				this.editDialog.isShow = true;
 				this.editDialog.data = {
 					name: '',
@@ -138,23 +141,30 @@
 			},
 			editSubmit: function () {
 				this.$refs.editDialog.validate((valid) => {
+					let roleId = this.editDialog.data.id;
+					let roleName = this.editDialog.data.name;
+					let roleDescription = this.editDialog.data.description;
+					console.log("获取界面数据：",this.editDialog.isAdd,roleId,roleName,roleDescription);
 					if (valid) {
 						this.$confirm('确认提交吗？', '提示', {}).then(() => {
-							this.addLoading = true;
-							//NProgress.start();
-							let para = Object.assign({}, this.addForm);
-							para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-							addUser(para).then((res) => {
-								this.addLoading = false;
-								//NProgress.done();
-								this.$message({
-									message: '提交成功',
-									type: 'success'
+							this.editDialog.isLoading = true;
+							//添加操作
+							if(this.editDialog.isAdd){
+								addRole(roleName,roleDescription).then((res) => {
+									this.editDialog.isLoading = false;
+									this.$message({
+										message: '提交成功',
+										type: 'success'
+									});
+									this.$refs['editDialog'].resetFields();
+									this.editDialog.isShow = false;
+									this.getRoles();
 								});
-								this.$refs['addForm'].resetFields();
-								this.addFormVisible = false;
-								this.getUsers();
-							});
+							//编辑操作
+							}else{
+
+							}
+							
 						});
 					}
 				});
@@ -162,7 +172,7 @@
 
 		},
 		mounted() {
-			this.getUsers();
+			this.getRoles();
 		}
 	}
 
