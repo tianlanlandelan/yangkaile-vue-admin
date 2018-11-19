@@ -53,6 +53,15 @@
 					<el-input type="textarea" v-model="editDialog.data.description"></el-input>
 				</el-form-item>
 			</el-form>
+			<template>
+				<el-transfer
+					filterable
+					:filter-method="filterMethod"
+					filter-placeholder="权限名称"
+					v-model="editDialog.transferValue"
+					:data="editDialog.transferData">
+				</el-transfer>
+			</template>
 			<div slot="footer" class="dialog-footer">
 				<el-button @click.native="editDialog.isShow = false">取消</el-button>
 				<el-button type="primary" @click.native="editSubmit" :loading="editDialog.isLoading">提交</el-button>
@@ -67,14 +76,20 @@
 	export default {
 		data() {
 			return {
+				//查询关键字
 				filters: {
 					name: ''
 				},
+				//角色列表
 				roles: [],
+				//总记录数
 				total: 0,
+				//页数
 				page: 1,
+				//是否显示列表加载动画
 				listLoading: false,
-				sels: [],//列表选中列
+				//列表选中列
+				sels: [],
 				//编辑界面数据
 				editDialog:{
 					//是否是添加界面
@@ -92,12 +107,16 @@
 							{ required: true, message: '角色描述不能为空', trigger: 'blur' }
 						]
 					},
-					//数据
+					//编辑界面数据
 					data:{
 						id: 0,
 						name: '',
 						description: ''
-					}
+					},
+					//穿梭框数据源 TODO
+					transferData:[{label:"用户管理",key:1},{label:"权限管理",key:2},{label:"角色管理",key:3}],
+					//穿梭框的值
+					transferValue:[]
 				}
 			}
 		},
@@ -180,7 +199,10 @@
 					}
 				});
 			},
-
+			//穿梭框过滤方法
+			filterMethod(query, item) {
+          		return item.label.indexOf(query) > -1;
+        	}
 		},
 		mounted() {
 			this.getRoles();

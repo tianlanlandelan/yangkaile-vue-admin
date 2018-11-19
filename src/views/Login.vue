@@ -1,18 +1,82 @@
 <template>
-  <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px" class="demo-ruleForm login-container">
+<el-row>
+  <!-- 登录界面-->
+  <el-form :model="logonUser" :rules="logonRules" ref="logonUser" label-position="left" label-width="0px" class="demo-ruleForm login-container">
     <h3 class="title">系统登录</h3>
-    <el-form-item prop="account">
-      <el-input type="text" v-model="ruleForm2.account" auto-complete="off" placeholder="账号"></el-input>
+    <!-- 用户名输入框 -->
+    <el-form-item prop="username">
+      <el-input type="text" v-model="logonUser.username" auto-complete="off" placeholder="用户名、手机号、邮箱"></el-input>
     </el-form-item>
-    <el-form-item prop="checkPass">
-      <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="密码"></el-input>
+    <!-- 密码输入框 -->
+    <el-form-item prop="password">
+      <el-input type="password" v-model="logonUser.password" auto-complete="off" placeholder="密码"></el-input>
     </el-form-item>
-    <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
+    <!-- 忘记密码和新用户注册按钮 -->
+    <el-col :span="12">
+      <el-button type="text">忘记密码？</el-button>
+    </el-col>
+    <el-col :span="12">
+      <el-button type="text">新用户注册</el-button>
+    </el-col>
+    <!-- 登录按钮 -->
     <el-form-item style="width:100%;">
-      <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2" :loading="logining">登录</el-button>
-      <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
+      <el-button type="primary" style="width:100%;" @click.native.prevent="handleLogon" :loading="logining">登录</el-button>
     </el-form-item>
   </el-form>
+
+  <!-- 注册界面 -->
+  <el-form :model="logonUser" :rules="logonRules" ref="logonUser" label-position="left" label-width="0px" class="demo-ruleForm login-container">
+    <h3 class="title">新用户注册</h3>
+    <el-form-item style="width:100%;">
+      <!-- 步骤条 -->
+      <el-steps :active="stepsActive" finish-status="success">
+        <el-step title="选择注册方式"></el-step>
+        <el-step title="填写基本信息"></el-step>
+        <el-step title="身份验证"></el-step>
+        <el-step title="注册完成"></el-step>
+      </el-steps>    
+    </el-form-item>
+    <!-- 第一步-->
+    <el-row>
+      <el-form-item style="width:100%;">
+        <el-button type="primary"  style="width:100%;" plain @click="handleStep">手机号注册</el-button>
+      </el-form-item>
+      <el-form-item style="width:100%;">
+        <el-button type="primary"  style="width:100%;" plain @click="handleStep">邮箱注册</el-button>
+      </el-form-item>
+    </el-row>
+    <!-- 第二步-->
+    <el-row>
+      <el-form-item prop="username">
+        <el-input type="text" v-model="logonUser.username" placeholder="请输入手机号"></el-input>
+      </el-form-item>
+      <el-form-item prop="password">
+        <el-input type="password" v-model="logonUser.password" placeholder="请输入密码"></el-input>
+      </el-form-item>
+      <el-form-item prop="password">
+        <el-input type="password" v-model="logonUser.password" placeholder="请再次输入密码"></el-input>
+      </el-form-item>
+      <el-form-item style="width:100%;">
+        <el-button type="primary"  style="width:100%;" @click="handleStep">发送验证码</el-button>
+      </el-form-item>
+    </el-row>
+    <!-- 第三步-->
+    <el-row>
+      <el-form-item prop="username">
+        <el-input type="text" v-model="logonUser.username" placeholder="请输入收到的验证码"></el-input>
+      </el-form-item>
+      <el-form-item style="width:100%;">
+        <el-button type="primary"  style="width:100%;" @click="handleStep">提交</el-button>
+      </el-form-item>
+    </el-row>
+    <!-- 第四步-->
+    <el-row>
+      <el-form-item style="width:100%;">
+        <el-button type="text"  style="width:100%;"  @click="handleStep">注册成功，自动登录中... ...</el-button>
+      </el-form-item>
+    </el-row>  
+  </el-form>
+</el-row>
 </template>
 
 <script>
@@ -20,46 +84,49 @@
   export default {
     data() {
       return {
-        logining: false,
-        ruleForm2: {
-          account: 'guyexing@foxmail.com',
-          checkPass: '123456'
+        //登录用户数据
+        logonUser: {
+          username: '',
+          password: ''
         },
-        rules2: {
-          account: [
+        //登录验证规则
+        logonRules: {
+          username: [
             { required: true, message: '请输入账号', trigger: 'blur' },
-            //{ validator: validaePass }
           ],
-          checkPass: [
+          password: [
             { required: true, message: '请输入密码', trigger: 'blur' },
-            //{ validator: validaePass2 }
           ]
         },
-        checked: true
+        //登录按钮是否显示加载动画
+        logining: false,
+        //注册界面步骤条当前步骤Index
+        stepsActive:0,
       };
     },
     methods: {
-      handleReset2() {
-        this.$refs.ruleForm2.resetFields();
-      },
-      handleSubmit2(ev) {
-        var _this = this;
-        this.$refs.ruleForm2.validate((valid) => {
+      //登录操作
+      handleLogon(ev) {
+        //验证表单内容是否符合规则
+        this.$refs.logonUser.validate((valid) => {
           if (valid) {
+            //显示加载动画
             this.logining = true;
-            var loginParams = { userName: this.ruleForm2.account, password: this.ruleForm2.checkPass };
-            req_logon(loginParams).then(response => {
+            //调用登录接口，上传用户名和密码
+            req_logon(this.logonUser.username,this.logonUser.password).then(response => {
               console.log("登录完毕，Response:",response);
               this.logining = false;
+              //解析接口应答的json串
               let { data, message, success } = response;
+              //应答不成功，提示错误信息
               if (success !== 0) {
                 this.$message({
                   message: message,
                   type: 'error'
                 });
+              //应答成功，将用户信息缓存起来。跳转到默认页面
               } else {
-                //TODO 修改登录请求，登录完成后返回用户信息
-                let user =   {id: 1,avatar: '../../static/img/icon.png',name: '杨先生'};
+                let user =   {id: data.id,avatar: '../../static/img/icon.png',name: data.nickName};
                 sessionStorage.setItem('user', JSON.stringify(user));
                 this.$router.push({ path: '/RouterList' });
               }
@@ -69,6 +136,9 @@
             return false;
           }
         });
+      },
+      handleStep(){
+        this.stepsActive ++;
       }
     }
   }
@@ -77,13 +147,12 @@
 
 <style lang="scss" scoped>
   .login-container {
-    /*box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);*/
     -webkit-border-radius: 5px;
     border-radius: 5px;
     -moz-border-radius: 5px;
     background-clip: padding-box;
     margin: 180px auto;
-    width: 350px;
+    width: 500px;
     padding: 35px 35px 15px 35px;
     background: #fff;
     border: 1px solid #eaeaea;
