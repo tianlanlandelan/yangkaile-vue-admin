@@ -17,35 +17,26 @@ Vue.use(ElementUI)
 Vue.use(VueRouter)
 Vue.use(Vuex)
 
-//NProgress.configure({ showSpinner: false });
-
 const router = new VueRouter({
   routes
 })
 
+//过滤路由，只有登录和注册页面允许未登录状态下访问
 router.beforeEach((to, from, next) => {
-  //NProgress.start();
-  if (to.path == '/login') {
+  if (to.path == '/login' || to.path == '/Register') {
     sessionStorage.removeItem('user');
   }
   let user = JSON.parse(sessionStorage.getItem('user'));
-  if (!user && to.path != '/login') {
+  if (!user && to.path != '/login' && to.path != '/Register') {
     next({ path: '/login' })
   } else {
     next()
   }
 })
 
-//router.afterEach(transition => {
-//NProgress.done();
-//});
-
 new Vue({
-  //el: '#app',
-  //template: '<App/>',
   router,
   store,
-  //components: { App }
   render: h => h(App)
 }).$mount('#app')
 
