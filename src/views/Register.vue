@@ -12,13 +12,14 @@
         <el-step title="注册完成"></el-step>
       </el-steps>    
     </el-form-item>
+   
     <!-- 第一步-->
     <el-row v-show="showStep1">
       <el-form-item style="width:100%;">
-        <el-button type="primary"  style="width:100%;" plain @click="handleStep">手机号注册</el-button>
+        <el-button type="primary"  style="width:100%;" plain @click="handleStep(0)">手机号注册</el-button>
       </el-form-item>
       <el-form-item style="width:100%;">
-        <el-button type="primary"  style="width:100%;" plain @click="handleStep">邮箱注册</el-button>
+        <el-button type="primary"  style="width:100%;" plain @click="handleStep(1)">邮箱注册</el-button>
       </el-form-item>
     </el-row>
     <!-- 第二步-->
@@ -82,9 +83,7 @@
         logining: false,
         //注册界面步骤条当前步骤Index
         stepsActive:0,
-        isShowLogon:true,
-        isShowRegister:false,
-        showStep1:false,
+        showStep1:true,
         showStep2:false,
         showStep3:false,
         showStep4:false,
@@ -93,39 +92,7 @@
       };
     },
     methods: {
-      //登录操作
-      handleLogon(ev) {
-        //验证表单内容是否符合规则
-        this.$refs.logonUser.validate((valid) => {
-          if (valid) {
-            //显示加载动画
-            this.logining = true;
-            //调用登录接口，上传用户名和密码
-            req_logon(this.logonUser.username,this.logonUser.password).then(response => {
-              console.log("登录完毕，Response:",response);
-              this.logining = false;
-              //解析接口应答的json串
-              let { data, message, success } = response;
-              //应答不成功，提示错误信息
-              if (success !== 0) {
-                this.$message({
-                  message: message,
-                  type: 'error'
-                });
-              //应答成功，将用户信息缓存起来。跳转到默认页面
-              } else {
-                let user =   {id: data.id,avatar: '../../static/img/icon.png',name: data.nickName};
-                sessionStorage.setItem('user', JSON.stringify(user));
-                this.$router.push({ path: '/RouterList' });
-              }
-            });
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
-      showRegister(){
+      showRegister(index){
         this.isShowLogon = false;
         this.isShowRegister = true;
         this.showStep1 = false;
@@ -162,7 +129,7 @@
           setTimeout(()=>{
             console.log("stepsActive = 3");
             this.refush();
-            }, 3000 );
+            }, 1000 );
           
         }
       },
@@ -170,8 +137,8 @@
         this.stepsActive = 4;
         setTimeout(()=>{
             console.log("stepsActive = 4");
-            window.location.reload();
-            }, 3000 );
+            this.$router.push('/Logon');
+            }, 1000 );
       }
     }
   }
