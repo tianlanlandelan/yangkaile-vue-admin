@@ -37,7 +37,7 @@
 			<el-table-column prop="birthday" label="生日" sortable>
 				<template slot-scope="scope">
 					<el-date-picker 
-						disabled="true"
+						disabled
 						v-model="scope.row.birthday"
 						type="datetime">
 					</el-date-picker>
@@ -46,7 +46,7 @@
 			<el-table-column prop="createTime" label="注册时间" sortable>
 				<template slot-scope="scope">
 					<el-date-picker 
-						disabled="true"
+						disabled
 						v-model="scope.row.createTime"
 						type="datetime">
 					</el-date-picker>

@@ -6,10 +6,14 @@ let Base64 = require('js-base64').Base64;
 
 /**
  * 登录接口
- * @param {用户名、密码等参数} params 
+ * @param {用户名、手机号、邮箱} userName 
+ * @param {密码} password 
  */
-export const req_logon = params => { 
-    return axios.post(`${base}/logon`, params).then(res => res.data); 
+export const req_logon = (userName,password) => { 
+    return axios.post(`${base}/logon`, {
+        userName:userName,
+        password:password
+    }).then(res => res.data); 
 };
 /**
  * 获取权限列表
