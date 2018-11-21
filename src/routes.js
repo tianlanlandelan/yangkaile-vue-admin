@@ -1,4 +1,4 @@
-import Login from './views/Login.vue'
+import Logon from './views/Login.vue'
 import Register from './views/Register.vue'
 import NotFound from './views/404.vue'
 import Home from './views/Home.vue'
@@ -15,8 +15,8 @@ import echarts from './views/demo/echarts.vue'
 
 let routes = [
     {
-        path: '/login',
-        component: Login,
+        path: '/Logon',
+        component: Logon,
         name: '',
         hidden: true
     },
@@ -33,7 +33,7 @@ let routes = [
         hidden: true
     },
     {
-        path: '/',
+        path: '/Router',
         component: Home,
         name: '权限管理',
         iconCls: 'el-icon-message',//图标样式class
@@ -42,7 +42,7 @@ let routes = [
         ]
     },
     {
-        path: '/',
+        path: '/User',
         component: Home,
         name: '用户管理',
         iconCls: 'fa fa-id-card-o',
@@ -51,7 +51,7 @@ let routes = [
         ]
     },
     {
-        path: '/',
+        path: '/Role',
         component: Home,
         name: '角色管理',
         iconCls: 'fa fa-address-card',
@@ -60,7 +60,7 @@ let routes = [
         ]
     },
     {
-        path: '/',
+        path: '/Log',
         component: Home,
         name: '日志查询/数据统计',
         iconCls: 'fa fa-address-card',
@@ -69,7 +69,7 @@ let routes = [
         ]
     },
     {
-        path: '/',
+        path: '/Demo',
         component: Home,
         name: 'Demo',
         iconCls: 'el-icon-message',//图标样式class
