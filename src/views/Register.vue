@@ -43,7 +43,8 @@
 </template>
 
 <script>
-  import { req_logon ,req_sendSMSVCode,req_sendEmailVCode} from '../api/api';
+  import { req_register ,req_sendSMSVCode,req_sendEmailVCode} from '../api/api';
+import { callbackify } from 'util';
   export default {
     data() {
       return {
@@ -58,7 +59,6 @@
           username: { required: true, message: '请输入手机号或邮箱', trigger: 'blur' },
           password: { required: true, message: '请输入密码', trigger: 'blur' },
           code: { required: true, message: '请输入验证码', trigger: 'blur' }
-
         },
         //注册界面步骤条当前步骤Index
         stepsActive:0,
@@ -70,17 +70,31 @@
       };
     },
     methods: {
+      checkUserName(){
+        let username = this.registerUser.username;
+        var phoneRoles=/^1+\d{10}$/;
+        var notPhone = !phoneRoles.test(username);
+        if(!notPhone){
+          return 0;
+        }
+        var emailRole  = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+        var notEmail = !emailRole.test(username);
+        if(!notEmail){
+          return 1;
+        }
+        return -1;
+      },
+      /**
+       * 发送验证码
+       */
       handleSendValidateCode(){
+        this.handleStep();
+        return false;
         let username = this.registerUser.username;
         //验证表单数据
         this.$refs.registerUser.validate((valid) => {
           if (valid) {
-            var phoneRoles=/^1+\d{10}$/;
-            var notPhone = !phoneRoles.test(username);
-            console.log("notPhone:",notPhone,username);
-            var emailRole  = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-            var notEmail = !emailRole.test(username);
-            if(!notPhone){
+            if(this.checkUserName() == 0){
               req_sendSMSVCode(username).then(response => {
                 console.log("短信验证码发送完毕，Response:",response);
                 this.$message({
@@ -90,7 +104,7 @@
               });
               this.registerUser.code = '';
               this.handleStep();
-            }else if(!notEmail){
+            }else if(this.checkUserName() == 1){
               req_sendEmailVCode(username).then(response => {
                 console.log("邮箱验证码发送完毕，Response:",response);
                 this.$message({
@@ -109,12 +123,14 @@
           }
         });
       },
-      //登录操作
-      handleRegister() {
-        this.$refs.registerUser.validate((valid) => {
+      //校验验证码
+      handleRegister(){
+          let user = this.registerUser;
+          //验证表单数据
+          this.$refs.registerUser.validate((valid) => {
           if (valid) {
-            //调用登录接口，上传用户名和密码
-            req_logon(this.registerUser.username,this.registerUser.password,this,registerUser.code).then(response => {
+            //调用注册接口
+            req_register(user.username,user.password,user.code).then(response => {
               console.log("登录完毕，Response:",response);
               this.logining = false;
               //解析接口应答的json串
@@ -125,18 +141,13 @@
                   message: message,
                   type: 'error'
                 });
-              //应答成功，将用户信息缓存起来。跳转到默认页面
+              //注册成功，跳转到登录页面
               } else {
-                let user =   {id: data.id,avatar: '../../static/img/icon.png',name: data.nickName};
-                sessionStorage.setItem('user', JSON.stringify(user));
-                this.$router.push({ path: '/RouterList' });
+                this.$router.push({ path: '/Logon' });
               }
             });
-          }else{
-            console.log('error submit!!');
-            return false;
-          }
-        });
+            }
+          });
       },
       showRegister(index){
         this.showStep1 = false;

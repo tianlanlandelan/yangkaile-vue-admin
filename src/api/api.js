@@ -32,7 +32,7 @@ export const req_register = (userName,password,code) => {
     }).then(res => res.data); 
 };
 /**
- * 获取验证码接口
+ * 发送短信验证码接口
  * @param {手机号或邮箱} userName 
  */
 export const req_sendSMSVCode = (phone) => { 
@@ -42,6 +42,11 @@ export const req_sendSMSVCode = (phone) => {
         }
     }).then(res => res.data); 
 };
+
+/**
+ * 发送邮件验证码接口
+ * @param {邮箱} email 
+ */
 export const req_sendEmailVCode = (email) => { 
     return axios.get(`${base}/sendEmailCode`,{
             params:{
@@ -49,6 +54,7 @@ export const req_sendEmailVCode = (email) => {
             }
     }).then(res => res.data); 
 };
+
 /**
  * 获取权限列表
  */
