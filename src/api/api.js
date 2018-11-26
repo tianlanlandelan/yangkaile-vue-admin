@@ -1,7 +1,10 @@
 import axios from 'axios';
 import md5 from 'js-md5';
+/** 需要先登录再访问的路由 */
+let api = 'api';
 
-let base = 'api';
+/** 不需要登录就能访问的路由 */
+let base = 'base';
 let Base64 = require('js-base64').Base64;
 
 /**
@@ -16,24 +19,55 @@ export const req_logon = (userName,password) => {
     }).then(res => res.data); 
 };
 /**
+ * 注册接口
+ * @param {手机号或邮箱} userName 
+ * @param {密码} password 
+ * @param {验证码} code 
+ */
+export const req_register = (userName,password,code) => { 
+    return axios.post(`${base}/register`, {
+        userName:userName,
+        password:password,
+        verificationCode:code
+    }).then(res => res.data); 
+};
+/**
+ * 获取验证码接口
+ * @param {手机号或邮箱} userName 
+ */
+export const req_sendSMSVCode = (phone) => { 
+    return axios.get(`${base}/sendSMSCode`,{
+        params:{
+            phone:phone
+        }
+    }).then(res => res.data); 
+};
+export const req_sendEmailVCode = (email) => { 
+    return axios.get(`${base}/sendEmailCode`,{
+            params:{
+                email:email
+            }
+    }).then(res => res.data); 
+};
+/**
  * 获取权限列表
  */
 export const req_getRouterList = () => { 
-    return axios.get(`${base}`,{params:{methodName:'getAllRouters10007'}}
+    return axios.get(`${api}`,{params:{methodName:'getAllRouters10007'}}
      ).then(res => res.data); 
 };
 /**
  * 获取角色列表
  */
 export const req_getRoleList = () => { 
-    return axios.get(`${base}`,{params:{methodName:'getAllRoles10003'}}
+    return axios.get(`${api}`,{params:{methodName:'getAllRoles10003'}}
      ).then(res => res.data); 
 };
 /**
  * 获取用户信息列表
  */
 export const req_getUserInfoList = () => { 
-    return axios.get(`${base}`,{params:{methodName:'getAllUserInfo10018'}}
+    return axios.get(`${api}`,{params:{methodName:'getAllUserInfo10018'}}
      ).then(res => res.data); 
 };
 /**
@@ -43,7 +77,7 @@ export const req_getUserInfoList = () => {
  */
 export const addRole = (name,description) => { 
     return axios.post(
-    `${base}`, { 
+    `${api}`, { 
             methodName:'addRole10011',
             parameters:"name:" + Base64.encode(name) + ";description:" + Base64.encode(description) 
     }); 
@@ -56,7 +90,7 @@ export const addRole = (name,description) => {
  */
 export const updateRole = (id,name,description) => { 
     return axios.put(
-    `${base}`, { 
+    `${api}`, { 
             methodName:'updateRole10015',
             parameters: "id:" + Base64.encode(id) 
                         +";name:" + Base64.encode(name) 
@@ -64,12 +98,12 @@ export const updateRole = (id,name,description) => {
     }); 
 };
 
-export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };
+export const getUserList = params => { return axios.get(`${api}/user/list`, { params: params }); };
 
-export const removeUser = params => { return axios.get(`${base}/user/remove`, { params: params }); };
+export const removeUser = params => { return axios.get(`${api}/user/remove`, { params: params }); };
 
-export const batchRemoveUser = params => { return axios.get(`${base}/user/batchremove`, { params: params }); };
+export const batchRemoveUser = params => { return axios.get(`${api}/user/batchremove`, { params: params }); };
 
-export const editUser = params => { return axios.get(`${base}/user/edit`, { params: params }); };
+export const editUser = params => { return axios.get(`${api}/user/edit`, { params: params }); };
 
-export const addUser = params => { return axios.get(`${base}/user/add`, { params: params }); };
+export const addUser = params => { return axios.get(`${api}/user/add`, { params: params }); };
