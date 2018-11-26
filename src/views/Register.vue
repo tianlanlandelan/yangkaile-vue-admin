@@ -88,8 +88,6 @@ import { callbackify } from 'util';
        * 发送验证码
        */
       handleSendValidateCode(){
-        this.handleStep();
-        return false;
         let username = this.registerUser.username;
         //验证表单数据
         this.$refs.registerUser.validate((valid) => {
