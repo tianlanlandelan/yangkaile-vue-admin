@@ -8,12 +8,12 @@
 					<el-input v-model="filters.name" placeholder="姓名"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" v-on:click="getUsers">查询</el-button>
+					<el-button type="primary" v-on:click="getRouters">查询</el-button>
 				</el-form-item>
 			</el-form>
 		 </el-col>
 		 <el-col :span="12" class="toolbar">
-			<el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="20" :total="total" style="float:right;">
+			<el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="pageSize" :total="total" style="float:right;">
 			</el-pagination>
 		 </el-col>
 		</el-row>
@@ -58,6 +58,7 @@
 				routers: [],
 				total: 0,
 				page: 1,
+				pageSize: 5,
 				listLoading: false,
 				editLoading: false,
 				editFormRules: {
@@ -76,26 +77,28 @@
 		methods: {
 			handleCurrentChange(val) {
 				this.page = val;
-				this.getUsers();
+				this.getRouters();
 			},
 			//获取用户列表
-			getUsers() {
+			getRouters() {
 				let para = {
 					page: this.page,
 					name: this.filters.name
 				};
 				this.listLoading = true;
-				req_getRouterList().then((res) => {
+				req_getRouterList(this.page,this.pageSize).then((res) => {
 					console.log('req_getRouterList',res);
-					//TODO 分页查询
-					this.total = 100;
-					this.routers = res.data;
+					let response = res.data;
+					if(response.total != 0){
+						this.total = response.total;
+					}
+					this.routers = response.data;
 					this.listLoading = false;
 				});
 			}
 		},
 		mounted() {
-			this.getUsers();
+			this.getRouters();
 		}
 	}
 
