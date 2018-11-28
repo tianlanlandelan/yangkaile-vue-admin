@@ -58,8 +58,12 @@ export const req_sendEmailVCode = (email) => {
 /**
  * 获取权限列表
  */
-export const req_getRouterList = () => { 
-    return axios.get(`${api}`,{params:{methodName:'getAllRouters10007'}}
+export const req_getRouterList = (page,size) => { 
+    return axios.get(`${api}`,{params:{
+                methodName:'getPageList10020',
+                parameters:"currentPage:" + Base64.encode(page) + ";pageSize:" + Base64.encode(size) 
+            }
+        }
      ).then(res => res.data); 
 };
 /**
