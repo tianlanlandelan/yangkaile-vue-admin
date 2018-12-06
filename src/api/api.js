@@ -108,6 +108,22 @@ export const updateRole = (id,name,description) => {
     }); 
 };
 
+/**
+ * 获取登录日志
+ * @param {当前页} page 
+ * @param {页面大小} size 
+ */
+export const req_getLogonLogList = (page,size) => { 
+    return axios.get(`${api}`,{params:{
+                methodName:'getPageList30008',
+                parameters:"currentPage:" + Base64.encode(page) + ";pageSize:" + Base64.encode(size) 
+            }
+        }
+     ).then(res => res.data); 
+};
+
+
+
 export const getUserList = params => { return axios.get(`${api}/user/list`, { params: params }); };
 
 export const removeUser = params => { return axios.get(`${api}/user/remove`, { params: params }); };

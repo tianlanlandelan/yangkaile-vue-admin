@@ -8,7 +8,7 @@
 					<el-input v-model="filters.name" placeholder="姓名"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" v-on:click="getRouters">查询</el-button>
+					<el-button type="primary" v-on:click="getDataList">查询</el-button>
 				</el-form-item>
 			</el-form>
 		 </el-col>
@@ -19,7 +19,7 @@
 		</el-row>
 
 		<!--列表-->
-		<el-table :data="routers" highlight-current-row v-loading="listLoading"  style="width: 100%;">
+		<el-table :data="dataList" highlight-current-row v-loading="listLoading"  style="width: 100%;">
 			<el-table-column prop="name" label="接口名称"  sortable>
 			</el-table-column>
 			<el-table-column prop="requestType" width="120px" label="请求方式" sortable>
@@ -55,32 +55,20 @@
 				filters: {
 					name: ''
 				},
-				routers: [],
+				dataList: [],
 				total: 0,
 				page: 1,
-				pageSize: 5,
-				listLoading: false,
-				editLoading: false,
-				editFormRules: {
-					name: [
-						{ required: true, message: '请输入姓名', trigger: 'blur' }
-					]
-				},
-				addLoading: false,
-				addFormRules: {
-					name: [
-						{ required: true, message: '请输入姓名', trigger: 'blur' }
-					]
-				}
+				pageSize: 10,
+				listLoading: false
 			}
 		},
 		methods: {
 			handleCurrentChange(val) {
 				this.page = val;
-				this.getRouters();
+				this.getDataList();
 			},
 			//获取用户列表
-			getRouters() {
+			getDataList() {
 				let para = {
 					page: this.page,
 					name: this.filters.name
@@ -92,13 +80,13 @@
 					if(response.total != 0){
 						this.total = response.total;
 					}
-					this.routers = response.data;
+					this.dataList = response.data;
 					this.listLoading = false;
 				});
 			}
 		},
 		mounted() {
-			this.getRouters();
+			this.getDataList();
 		}
 	}
 
