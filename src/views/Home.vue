@@ -1,14 +1,16 @@
 <template>
-	<el-row class="container">
+<el-row class="container">
+	<!-- 页头 -->
+	<el-row>
 		<el-col :span="24" class="header">
-			<el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
-				{{collapsed?'':sysName}}
+			<el-col :span="10" class="logo">
+				{{sysName}}
 			</el-col>
-			<el-col :span="10">
+			<!-- <el-col :span="10">
 				<div class="tools" @click.prevent="collapse">
 					<i class="fa fa-align-justify"></i>
 				</div>
-			</el-col>
+			</el-col> -->
 			<el-col :span="4" class="userinfo">
 				<el-dropdown trigger="hover">
 					<span class="el-dropdown-link userinfo-inner"><img :src="this.sysUserAvatar" /> {{sysUserName}}</span>
@@ -20,63 +22,95 @@
 				</el-dropdown>
 			</el-col>
 		</el-col>
-		<el-col :span="24" class="main">
-			<aside :class="collapsed?'menu-collapsed':'menu-expanded'">
-				<!--导航菜单-->
-				<el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleopen($route.path)" @close="handleclose($route)" @select="handleselect"
-					 unique-opened router v-show="!collapsed">
-					<template v-for="(item,index) in $router.options.routes" v-if="!item.hidden">
-						<el-submenu :index="index+''" v-if="!item.leaf" :key="index">
-							<template slot="title"><i :class="item.iconCls"></i>{{item.name}}</template>
-							<el-menu-item v-for="child in item.children" :index="child.path" :key="child.path" v-if="!child.hidden">{{child.name}}</el-menu-item>
-						</el-submenu>
-						<el-menu-item v-if="item.leaf&&item.children.length>0" :index="item.children[0].path" :key="index"><i :class="item.iconCls"></i>{{item.children[0].name}}</el-menu-item>
+	</el-row>
+	
+	<!-- 页面内容 -->
+	<el-row>
+		<!--左侧导航-->
+		<el-col :span="4" class= "left-bar">
+			<!-- <img class="portrait" :src="this.sysUserAvatar" />  -->
+			<el-collapse v-model="activeName">
+				<el-collapse-item :name="topic.id" v-for="topic in topics" :key="topic.id">
+					<template slot="title">
+						<div class="topic">
+							{{topic.title}}
+							<i v-if="topic.status === 2" class="el-icon-success Success " ></i>
+							<i v-if="topic.status === 1" class="el-icon-loading Blue " ></i>
+							<i v-if="topic.status === 0" class="el-icon-remove-outline Info " ></i>
+						</div>
 					</template>
-				</el-menu>
-				<!--导航菜单-折叠后-->
-				<ul class="el-menu el-menu-vertical-demo collapsed" v-show="collapsed" ref="menuCollapsed">
-					<li v-for="(item,index) in $router.options.routes" :key="index" v-if="!item.hidden" class="el-submenu item">
-						<template v-if="!item.leaf">
-							<div class="el-submenu__title" style="padding-left: 20px;" @mouseover="showMenu(index,true)" @mouseout="showMenu(index,false)"><i :class="item.iconCls"></i></div>
-							<ul class="el-menu submenu" :class="'submenu-hook-'+index" @mouseover="showMenu(index,true)" @mouseout="showMenu(index,false)"> 
-								<li v-for="child in item.children" v-if="!child.hidden" :key="child.path" class="el-menu-item" style="padding-left: 40px;" :class="$route.path==child.path?'is-active':''" @click="$router.push(child.path)">{{child.name}}</li>
-							</ul>
-						</template>
-						<template v-else>
-							<li class="el-submenu">
-								<div class="el-submenu__title el-menu-item" style="padding-left: 20px;height: 56px;line-height: 56px;padding: 0 20px;" :class="$route.path==item.children[0].path?'is-active':''" @click="$router.push(item.children[0].path)"><i :class="item.iconCls"></i></div>
-							</li>
-						</template>
-					</li>
-				</ul>
-			</aside>
-			<section class="content-container">
-				<div class="grid-content bg-purple-light">
-					<el-col :span="24" class="breadcrumb-container">
-						<strong class="title">{{$route.name}}</strong>
-						<el-breadcrumb separator="/" class="breadcrumb-inner">
-							<el-breadcrumb-item v-for="item in $route.matched" :key="item.path">
-								{{ item.name }}
-							</el-breadcrumb-item>
-						</el-breadcrumb>
-					</el-col>
-					<el-col :span="24" class="content-wrapper">
-						<transition name="fade" mode="out-in">
-							<router-view></router-view>
-						</transition>
-					</el-col>
-				</div>
-			</section>
+					<div class="subtopic" v-for="subtopic in topic.subtopics" :key="subtopic.id"
+						@click="showSubTopic(subtopic)">
+						{{subtopic.title}}
+						<i v-if="subtopic.status === 2" class="el-icon-success Success " ></i>
+						<i v-if="subtopic.status === 1" class="el-icon-loading Blue " ></i>
+						<i v-if="subtopic.status === 0" class="el-icon-remove-outline Info " ></i>		
+					</div>
+				</el-collapse-item>
+			</el-collapse>
+		</el-col>
+
+		<!--右侧内容-->
+		<el-col :span="20" class="right-content">
+			<!--步骤条-->
+			<el-row>
+				<el-col>
+					<el-steps :active="1" >
+						<el-step :title="sub.title" 
+							v-for="sub in currentTopic" :key="sub.id">
+						</el-step>
+					</el-steps>
+				</el-col>
+			</el-row>
+			<!--课程内容-->
+			<el-row>
+				<el-col>
+					<div class="split"><i class="el-icon-tickets"></i> Python For Beginners</div>
+					<video src="http://127.0.0.1:8088/images/video/20191003065346873.mp4" controls="controls">
+					您的浏览器不支持 video 标签。
+					</video>
+					<p>Welcome! Are you completely new to programming? If not then we presume you will be looking for information about why and how to get started with Python. Fortunately an experienced programmer in any programming language (whatever it may be) can pick up Python very quickly. It's also easy for beginners to use and learn, so jump in!</p>
+					<p>Installing Python is generally easy, and nowadays many Linux and UNIX distributions include a recent Python. Even some Windows computers (notably those from HP) now come with Python already installed. If you do need to install Python and aren't confident about the task you can find a few notes on the BeginnersGuide/Download wiki page, but installation is unremarkable on most platforms.</p>
+					<p>Before getting started, you may want to find out which IDEs and text editors are tailored to make Python editing easy, browse the list of introductory books, or look at code samples that you might find helpful.</p>
+					<p>There is a list of tutorials suitable for experienced programmers on the BeginnersGuide/Tutorials page. There is also a list of resources in other languages which might be useful if English is not your first language.</p>
+				</el-col>
+			</el-row>
+			<!--问题标题-->
+			<el-row>
+				<el-col>
+					<div class="split"><i class="el-icon-question"></i> Exercise</div>
+					<h3>When to use Python？</h3>
+					<p>Python is a pretty versatile language.For which applications can you use Python?</p>
+				</el-col>
+			</el-row>
+			<!--问题选项-->
+			<el-row>
+				<el-col>
+					<div class="split"><i class="el-icon-edit-outline"></i> Possible Answers</div>
+					<el-radio-group class="options"  v-model="chosen" size="small" v-for="option in options" :key="option.id" @change="optionsChanged">
+						<el-radio :label="option.title">{{option.text}}</el-radio>
+					</el-radio-group>
+				</el-col>
+			</el-row>
+			<!--LeaderBoard1-->
+			<el-row>
+				<LeaderBoard1></LeaderBoard1>
+			</el-row>
+			<!--答案与解析-->
 		</el-col>
 	</el-row>
+
+</el-row>
 </template>
 
 <script>
+	import LeaderBoard1 from "../components/leaderboard1.vue";
+	import {testData} from "../data.js";
 	export default {
+		components:{LeaderBoard1,testData},
 		data() {
 			return {
-				sysName:'VUEADMIN',
-				collapsed:false,
+				sysName:'内部培训',
 				sysUserName: '',
 				sysUserAvatar: '',
 				form: {
@@ -88,20 +122,29 @@
 					type: [],
 					resource: '',
 					desc: ''
-				}
+				},
+				topics:testData.topics,
+				//折叠面板导航栏默认打开页面
+				activeName: 1001,
+				currentTopic:testData.currentTopic,
+				//备选项
+				options:testData.options,
+				chosen:""
 			}
 		},
 		methods: {
+			//控制左侧导航栏展开收起
+			collapse(){
+				this.isCollapse=!this.isCollapse;
+			},
 			onSubmit() {
 				console.log('submit!');
 			},
-			handleopen(path) {
-				console.log('handleopen',path);
+			handleOpen(key, keyPath) {
+				console.log(key, keyPath);
 			},
-			handleclose(route) {
-				console.log('handleclose',route);
-			},
-			handleselect: function (a, b) {
+			handleClose(key, keyPath) {
+				console.log(key, keyPath);
 			},
 			//个人消息
 			mymessage(){
@@ -123,12 +166,22 @@
 
 				});
 			},
-			//折叠导航栏
-			collapse:function(){
-				this.collapsed=!this.collapsed;
+			showSubTopic(subtopic){
+				console.log("showSubTopic",subtopic.id,subtopic.status,subtopic.title);
+				if(subtopic.status === 0){
+					this.warningCannotStudy();
+				}
+			}
+			,
+			warningCannotStudy(){
+				this.$notify({
+				title: '您不能开始学习本课程',
+				message: '只有学完了本课程之前的全部课程内容，才能开始本课程的学习',
+				type: 'warning'
+				});
 			},
-			showMenu(i,status){
-				this.$refs.menuCollapsed.getElementsByClassName('submenu-hook-'+i)[0].style.display=status?'block':'none';
+			optionsChanged(label){
+				console.log("选择了",label);
 			}
 		},
 		mounted() {
@@ -138,7 +191,6 @@
 				this.sysUserName = user.name || '';
 				this.sysUserAvatar = user.avatar || '';
 			}
-
 		}
 	}
 
@@ -146,6 +198,56 @@
 <style scoped lang="scss">
 	@import '~scss_vars';
 	
+	.portrait{
+		width: 120px;
+		height: 120px;
+		border-radius: 40px;
+		margin: 10px 0px 10px 10px;
+	}
+	.left-bar{
+		padding-left: 20px;
+	}
+	.topic{
+		font-size: 24px;
+	}
+	.subtopic{
+		padding-left: 20px;
+		font-size: 18px;
+	}
+	.right-content{
+		padding:20px;
+	}
+	.options{
+		display:block;
+		line-height: 30px;
+	}
+	.split{
+		background-color: #DCDFE6;
+		line-height: 30px;
+		font-size:18px;
+		
+	}
+
+	.Success{
+		color:#67C23A;
+	}
+	.Blue{
+		color:#409EFF;
+	}
+	.Info{
+		color:#909399;
+	}
+
+	.iBig{
+		font-size: 24px;
+	}
+
+
+
+
+
+
+
 	.container {
 		position: absolute;
 		top: 0px;

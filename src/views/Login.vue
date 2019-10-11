@@ -1,30 +1,32 @@
 <template>
   <el-row>
-    <!-- 登录界面-->
-    <el-form :model="logonUser" :rules="logonRules" ref="logonUser" label-position="left" label-width="0px" class="demo-ruleForm login-container">
-      <h3 class="title">系统登录</h3>
-      <!-- 用户名输入框 -->
-      <el-form-item prop="username">
-        <el-input type="text" v-model="logonUser.username" auto-complete="off" placeholder="用户名、手机号、邮箱"></el-input>
-      </el-form-item>
-      <!-- 密码输入框 -->
-      <el-form-item prop="password">
-        <el-input type="password" v-model="logonUser.password" auto-complete="off" placeholder="密码"></el-input>
-      </el-form-item>
-      <!-- 忘记密码和新用户注册按钮 -->
-      <el-form-item>
-        <el-col :span="12">
-          <el-button type="text" @click="showRegister">忘记密码？</el-button>
-        </el-col>
-        <el-col :span="12">
-          <el-button type="text" @click="showRegister">新用户注册</el-button>
-        </el-col>
-      </el-form-item>
-      <!-- 登录按钮 -->
-      <el-form-item style="width:100%;">
-        <el-button type="primary" style="width:100%;" @click.native.prevent="handleLogon" :loading="logining">登录</el-button>
-      </el-form-item>
-    </el-form>
+    <el-form :model="logonUser" :rules="logonRules" 
+		ref="logonUser" label-position="left" 
+		label-width="0px" class="demo-ruleForm login-container"
+		>
+		  <h3 class="title">系统登录</h3>
+		    <!-- 用户名输入框 -->
+		    <el-form-item prop="username">
+		      <el-input type="text" v-model="logonUser.username" auto-complete="off" placeholder="用户名、手机号、邮箱"></el-input>
+		    </el-form-item>
+		    <!-- 密码输入框 -->
+		    <el-form-item prop="password">
+		      <el-input type="password" v-model="logonUser.password" auto-complete="off" placeholder="密码"></el-input>
+		    </el-form-item>
+		    <!-- 忘记密码和新用户注册按钮 -->
+		    <el-form-item>
+		      <el-col :span="12">
+		        <el-button type="text" @click="showRegister">忘记密码？</el-button>
+		      </el-col>
+		      <el-col :span="12">
+		        <el-button type="text" @click="showRegister">新用户注册</el-button>
+		      </el-col>
+		    </el-form-item>
+		    <!-- 登录按钮 -->
+		    <el-form-item style="width:100%;">
+		      <el-button type="primary" style="width:100%;" @click.native.prevent="handleLogon" :loading="logining">登录</el-button>
+		    </el-form-item>
+		  </el-form> 
   </el-row>
 </template>
 
@@ -75,7 +77,7 @@
               } else {
                 let user =   {id: data.id,avatar: '../../static/img/icon.png',name: data.nickName};
                 sessionStorage.setItem('user', JSON.stringify(user));
-                this.$router.push({ path: '/RouterList' });
+                this.$router.push({ path: '/Home' });
               }
             });
           } else {
@@ -89,12 +91,17 @@
         this.$router.push('/Register');
         console.log('RouterList',this.$router);
       }
-    }
+    },mounted(){
+		
+	}
   }
 
 </script>
 
 <style lang="scss" scoped>
+	html{
+		font-size: 16px;
+	}
   .login-container {
     -webkit-border-radius: 5px;
     border-radius: 5px;
@@ -106,13 +113,61 @@
     background: #fff;
     border: 1px solid #eaeaea;
     box-shadow: 0 0 25px #cac6c6;
-    .title {
+  }
+  .login-container .title {
       margin: 0px auto 40px auto;
       text-align: center;
       color: #505458;
     }
-    .remember {
+    .login-container .remember {
       margin: 0px 0px 35px 0px;
     }
+  
+  .sm-login-form {
+	font-size: 4rem;
+    border-radius: 5px;
+    background-clip: padding-box;
+    width: 100%;
+	margin-top:200px;
+    padding: 35px 35px 15px 35px;
+    background: #fff;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 0 25px #cac6c6;
+  }
+  .sm-login-form .title {
+    margin: 0px auto 40px auto;
+    text-align: center;
+    color: #505458;
+	font-size: 4rem;
+  }
+  .sm-login-form .title img{
+	  width: 50%;
+	  height: 4rem;
+  }
+  .sm-login-form .input{
+  	  width: 70%;
+  	  border: none;
+	
+	  font-size: 4rem;
+  }
+  
+  .sm-login-form .input:focus{
+    outline: 0;
+	border: none;
+}
+  .sm-login-form .remember {
+    margin: 0px 0px 35px 0px;
+  }
+  .sm-div{
+	  border-bottom: 4px solid #cac6c6;
+	  padding: 1rem;
+	  
+  }
+  .sm-div:hover{
+  	  border-bottom: 4px solid #66afe9;
+
+  }
+  .sm-font{
+	 font-size: 4rem; 
   }
 </style>

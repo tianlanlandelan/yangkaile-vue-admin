@@ -28,12 +28,13 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'http://127.0.0.1:8805',//设置你调用的接口域名和端口号 别忘了加http
+		target: 'http://127.0.0.1:8801',//设置你调用的接口域名和端口号 别忘了加http
         changeOrigin: true,
         secure:false 
       },
       '/base': {
-        target: 'http://127.0.0.1:8805',//设置你调用的接口域名和端口号 别忘了加http
+        target:'http://32gr2r.natappfree.cc',
+        // target: 'http://127.0.0.1:8805',//设置你调用的接口域名和端口号 别忘了加http
         changeOrigin: true,
         secure:false 
       },
